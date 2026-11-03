@@ -1,0 +1,11 @@
+node_modules/
+.netlify/
+.env
+.env.*
+.DS_Store
+__pycache__/
+*.db
+*.sqlite
+private/
+review/
+**/output/
