@@ -1,47 +1,41 @@
-# 自閉症檢核表 V4｜Netlify 工程測試版
+# 自閉症兒童行為檢核表｜GitHub Pages 唯一平台版
 
-**目前為測試程式，尚未通過專業逐題審核及個資安全驗收，不可輸入真實學生資料。**
+## 目前使用方式
 
-本專案承接 V3 的介面與權限設計，改用 **Netlify 靜態網頁 + Netlify Functions + Netlify Database（PostgreSQL）**，個人電腦無須安裝 Python。正式計分始終停用。
+本儲存庫已提供 **只使用 GitHub Pages** 的線上操作示範：`docs/index.html`。
 
-## ⚠️ GitHub 儲存庫目前是 Public
+此版本不需要 Netlify、不需要 Cloudflare、不需要資料庫，也不必在電腦安裝 Python。
 
-已確認 `yotindo0808/asd-checklist-online` 目前為**公開儲存庫**。為避免直接公開原始量表題目，本儲存庫上傳的是**示範題庫（非原量表）**，僅用來測試完整互動流程。請不要以示範題作為施測工具，也不要輸入真實姓名或資料。
+### 開啟 GitHub Pages
 
-先於 GitHub Repository → Settings → General → Danger Zone → Change repository visibility，改成 **Private**。再由具授權權限的管理者以專業核對的原始題庫替換 `server/banks.js`。請勿加入任何真實學生資料、密碼或下載結果。
+1. 在 GitHub 儲存庫點選 **Settings → Pages**。
+2. **Build and deployment → Source** 選擇 **Deploy from a branch**。
+3. Branch 選 `main`，資料夾選 **`/docs`**，再按 **Save**。
+4. 部署完成後，網站預期位址為 `https://yotindo0808.github.io/asd-checklist-online/`；請以 Settings → Pages 顯示的網址為準。
 
-## Netlify 設定（需使用者在自己的帳號操作）
+### 操作流程
 
-1. 至 Netlify → **Add new project → Import an existing project → GitHub**，選擇 `yotindo0808/asd-checklist-online`。
-2. 使用此專案根目錄的 `netlify.toml`，發布資料夾為 `site/`，Function 位於 `netlify/functions/`。**不要選擇手動拖曳 HTML**，那樣無法建立後端。
-3. 使用 Netlify **Credit-based plan**，Netlify Database 才可使用；資料庫會隨 `@netlify/database` 與 `netlify/database/migrations/` 在部署時建立及遷移。資料庫是持續性資源，會消耗計算與傳輸額度，不能視為零費用。請先檢查方案及費用。
-4. 在 Netlify → Project configuration → Environment variables 建立兩個供 Functions 使用的安全變數：`ADMIN_PASSWORD`（至少14字）、`SESSION_PEPPER`（至少32字的獨立隨機字串），不要寫入 GitHub、聊天室或前端 JS。部署後如更改需重新部署。
-5. 使用 Netlify 網址開啟首頁，輸入剛才設定的密碼。透過建立虛構個案邀請、另開裝置填答、提交、下載 CSV/JSON、A4 列印、刪除來驗收。請先確認管理端收到作答結果。
+- 心評端在網頁產生示範填答連結，選擇學前50題、低年級47題或中年級以上47題。
+- 填答者使用網頁完成示範題，輸入自訂密碼後匯出加密 JSON。
+- 填答者以自行選擇的通訊方式將答案檔傳回心評人員，密碼請經另外的管道交付。
+- 心評人員在網頁選取 JSON 並輸入密碼，解密後可下載 CSV、列印 A4。
 
-## 功能
+### 明確限制
 
-- 心評端：單一密碼登入（2小時），建立三版本填答邀請、限時1至168小時、可加8字元驗證碼、撤銷、結果檢視、CSV/JSON、列印A4、確認領取及刪除。
-- 家長／教師：限時連結、免帳號、四選一、草稿、漏答檢查、提交後不可再填。
-- 伺服器：邀請 token 只保存雜湊、重複提交原子拒絕、管理登入限速、資料依期限禁止存取並定期清理（每日台灣時間02:00）。清理不等於清除第三方平台備份。
-- 計分：**未核定，不自動產生分數或鑑定結果**。
-- 第二、第三階段：僅保留後續整合規劃，尚未實作。
+**這不是正式施測系統。** 公開網頁只有示範題，不含原始144題；計分和鑑定功能停用。不可輸入真實學生資料。
 
-## 預覽與正式使用差異
+GitHub Pages 是靜態網站，所以**無法只靠 GitHub Pages 實現**：
 
-此 GitHub 儲存庫裡的 `server/banks.js` 是**示範題庫**，顯示「示範作答題第N題」；原始學前50、低年級47、中年級以上47題題幹未在此公開庫內提供。切換為 Private 後才能置換真正題庫（仍須確認使用授權）。
+- 真正保護心評端的密碼登入；
+- 家長按提交後自動傳回心評人員的安全收件；
+- 可從伺服器撤銷、真正到期失效的一次性填答連結。
 
-## 測試
+此版的「連結到期」只比對使用者裝置時間，並非伺服器的權限控制。加密答案檔只會下載到填答者的裝置，不會自動儲存到 GitHub。
 
-在 GitHub Codespaces 的終端機（Node 22+，不需 Python）：
+## 舊版程式保留
 
-```bash
-node --check site/app.js
-node --check server/core.js
-node --test tests/*.test.mjs
-```
+`site/`、`server/`、`netlify/` 是較早的 Netlify 後端設計，**GitHub Pages 不會執行這些服務**。請不要把 `site/` 設成 Pages 來源；目前請用 `main /docs`。
 
-## 安全限制
+## 量表專業驗收
 
-單一管理密碼不是多因素驗證，若涉及真實學生資料，還需機構個資核可、安全測試、存取稽核、備份刪除策略及量表使用授權。Netlify 資料庫分支可能在部署預覽中複製資料，正式使用前請特別檢視部署預覽的權限與敏感資料保護。網站網址即使由 Private repo 發布仍可能是公開網址。
-
-資料來源：使用者提供之《自閉症兒童行為檢核表》學前、低年級與中年級以上三份 Word 原件；尚無專業核可的計分規則未植入。
+三版本原始題幹與配分的人工覆核尚未正式核定。公開發布量表題文前，應確認使用及公開權利。正式診斷、切截分數與口語能力特殊計分不得由示範版自動產生。
