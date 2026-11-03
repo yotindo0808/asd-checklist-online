@@ -67,6 +67,7 @@ function apiCreateInvite(adminToken, options) {
   var hours = Number(options.hours);
   if (!Number.isInteger(hours) || hours < 1 || hours > 168) throw new Error('有效時間應為1至168小時');
   var label = String(options.caseLabel || '').trim().slice(0,80);
+  if (/^[\s]*[=+\-@]/.test(label)) throw new Error('個案代號不可使用公式字元');
   var role = String(options.respondentRole || 'parent');
   if (['parent','teacher','reporter'].indexOf(role)===-1) throw new Error('填答身分錯誤');
   var token = randomToken_();
