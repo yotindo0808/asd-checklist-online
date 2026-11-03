@@ -1,41 +1,24 @@
-# 自閉症兒童行為檢核表｜GitHub Pages 唯一平台版
+# 自閉症兒童行為檢核表｜線上自動收件系統
 
-## 目前使用方式
+**目前方案：Google Apps Script + 私人 Google 試算表；GitHub 作為程式版本備份。**
 
-本儲存庫已提供 **只使用 GitHub Pages** 的線上操作示範：`docs/index.html`。
+## 為何不再使用 GitHub Pages 收件？
 
-此版本不需要 Netlify、不需要 Cloudflare、不需要資料庫，也不必在電腦安裝 Python。
+僅靠 GitHub Pages 無法提供安全的管理密碼驗證、限時邀請、家長提交後自動收件和伺服器儲存。先前的「家長匯出檔案再交回」流程已被使用者否決。
 
-### 開啟 GitHub Pages
+建議使用 Google Apps Script 將前端與後端整合為同一個可分享網址；家長直接提交答案，心評人員登入取得結果，完成下載後可以刪除，資料最長暫存約七天。不需要 Netlify Credit-based 方案或安裝 Python。
 
-1. 在 GitHub 儲存庫點選 **Settings → Pages**。
-2. **Build and deployment → Source** 選擇 **Deploy from a branch**。
-3. Branch 選 `main`，資料夾選 **`/docs`**，再按 **Save**。
-4. 部署完成後，網站預期位址為 `https://yotindo0808.github.io/asd-checklist-online/`；請以 Settings → Pages 顯示的網址為準。
+## 最新版本 V5
 
-### 操作流程
+V5 完整程式（Code.gs、Index.html、Bank.gs）由 ChatGPT 對話中的「V5 私人部署完整套件」提供。原始題庫僅留在私人交付檔案，**沒有上傳到本公開 GitHub 儲存庫**。
 
-- 心評端在網頁產生示範填答連結，選擇學前50題、低年級47題或中年級以上47題。
-- 填答者使用網頁完成示範題，輸入自訂密碼後匯出加密 JSON。
-- 填答者以自行選擇的通訊方式將答案檔傳回心評人員，密碼請經另外的管道交付。
-- 心評人員在網頁選取 JSON 並輸入密碼，解密後可下載 CSV、列印 A4。
+部署概要：
+1. 建立**私人** Google 試算表。
+2. 擴充功能 → Apps Script。
+3. 依私人套件說明貼入 Code.gs、Index.html 與 Bank.gs。
+4. 在 Apps Script 專案設定中設定 SHEET_ID、ADMIN_PASSWORD_SETUP；在編輯器執行 setupSystem_。
+5. 部署為網頁應用程式，執行身分選「我」，允許任何人存取（若帳戶政策允許），使用虛構資料測試。
 
-### 明確限制
+**重要：目前未完成 Google 帳戶實際部署及個資安全驗收，不可輸入真實學生資料。原始三版本題目尚待專業逐字覆核；計分與鑑定功能未啟用。**
 
-**這不是正式施測系統。** 公開網頁只有示範題，不含原始144題；計分和鑑定功能停用。不可輸入真實學生資料。
-
-GitHub Pages 是靜態網站，所以**無法只靠 GitHub Pages 實現**：
-
-- 真正保護心評端的密碼登入；
-- 家長按提交後自動傳回心評人員的安全收件；
-- 可從伺服器撤銷、真正到期失效的一次性填答連結。
-
-此版的「連結到期」只比對使用者裝置時間，並非伺服器的權限控制。加密答案檔只會下載到填答者的裝置，不會自動儲存到 GitHub。
-
-## 舊版程式保留
-
-`site/`、`server/`、`netlify/` 是較早的 Netlify 後端設計，**GitHub Pages 不會執行這些服務**。請不要把 `site/` 設成 Pages 來源；目前請用 `main /docs`。
-
-## 量表專業驗收
-
-三版本原始題幹與配分的人工覆核尚未正式核定。公開發布量表題文前，應確認使用及公開權利。正式診斷、切截分數與口語能力特殊計分不得由示範版自動產生。
+專案歷史：`site/`、`netlify/` 為舊版 Netlify 工程原型；`docs/` 先前為純 GitHub Pages 加密檔案示範，均不代表最新的自動收件方案。
